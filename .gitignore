@@ -1,0 +1,8 @@
+# Config files
+.vscode/
+
+# Python Cache
+__pycache__/
+
+# WAM Config file
+wamconfig.json

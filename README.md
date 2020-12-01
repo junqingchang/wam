@@ -1,2 +1,9 @@
 # WAM
-World of Warcraft Addon Manager
+A Personal World of Warcraft Addon Manager
+
+## Built with
+cloudscraper
+BeautifulSoup4
+
+## Supports
+Curseforge
