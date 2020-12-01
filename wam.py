@@ -96,6 +96,7 @@ class WarcraftAddonManager(object):
         converted_time = self.convert_datetime(last_update.split()[:4])
 
         if converted_time > addon_last_update:
+            self.remove_addon(addon_name)
             download_page = scraper.get(f'{addon_link}/download')
             download_soup = BeautifulSoup(download_page.text, features='html.parser')
             link = download_soup.find('p', {'class':'text-sm'}).find('a')['href']
@@ -115,7 +116,7 @@ class WarcraftAddonManager(object):
             new_files = [x for x in all_addons if x not in existing_addons]
 
             self.config['addons'][addon_name]['last_update'] = converted_time
-            self.config['addons'][addon_name]['files'] += new_files
+            self.config['addons'][addon_name]['files'] = new_files
             self.save_config()
 
     def update_all_addons(self):
