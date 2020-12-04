@@ -3,6 +3,7 @@ import json
 import cloudscraper
 from bs4 import BeautifulSoup
 from zipfile import ZipFile
+import shutil
 
 class WarcraftAddonManager(object):
     def __init__(self, config_file):
@@ -96,7 +97,7 @@ class WarcraftAddonManager(object):
         converted_time = self.convert_datetime(last_update.split()[:4])
 
         if converted_time > addon_last_update:
-            self.remove_addon(addon_name)
+            self.remove_addon(addon_name, update_config=False)
             download_page = scraper.get(f'{addon_link}/download')
             download_soup = BeautifulSoup(download_page.text, features='html.parser')
             link = download_soup.find('p', {'class':'text-sm'}).find('a')['href']
@@ -122,11 +123,12 @@ class WarcraftAddonManager(object):
     def update_all_addons(self):
         for addon in self.config['addons']:
             self.update_addon(addon)
+        self.add_update_elvui()
 
-    def remove_addon(self, addon_name):
+    def remove_addon(self, addon_name, update_config=True):
         addon_files = self.config['addons'][addon_name]['files']
         for folder in addon_files:
-            os.rmdir(folder)
+            shutil.rmtree(os.path.join(self.addon_path, folder))
         del self.config['addons'][addon_name]
         self.save_config()
 
@@ -188,7 +190,6 @@ class WarcraftAddonManager(object):
         os.remove(os.path.join(self.addon_path, 'elvui.zip'))
         all_addons = os.listdir(self.addon_path)
         new_files = [x for x in all_addons if x not in existing_addons]
-        print(new_files)
         if 'elvui' not in self.config:
             self.config['elvui'] = {'files': []}
         self.config['elvui']['files'] += new_files
@@ -197,6 +198,6 @@ class WarcraftAddonManager(object):
     def remove_elvui(self):
         addon_files = self.config['elvui']['files']
         for folder in addon_files:
-            os.rmdir(folder)
+            shutil.rmtree(os.path.join(self.addon_path, folder))
         del self.config['elvui']
         self.save_config()
