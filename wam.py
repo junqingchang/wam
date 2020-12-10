@@ -129,8 +129,9 @@ class WarcraftAddonManager(object):
         addon_files = self.config['addons'][addon_name]['files']
         for folder in addon_files:
             shutil.rmtree(os.path.join(self.addon_path, folder))
-        del self.config['addons'][addon_name]
-        self.save_config()
+        if update_config:
+            del self.config['addons'][addon_name]
+            self.save_config()
 
     def wam_cmd(self):
         while True:
