@@ -97,6 +97,7 @@ class WarcraftAddonManager(object):
         converted_time = self.convert_datetime(last_update.split()[:4])
 
         if converted_time > addon_last_update:
+            print(f'Updating {addon_name}')
             self.remove_addon(addon_name, update_config=False)
             download_page = scraper.get(f'{addon_link}/download')
             download_soup = BeautifulSoup(download_page.text, features='html.parser')
@@ -122,6 +123,7 @@ class WarcraftAddonManager(object):
 
     def update_all_addons(self):
         for addon in self.config['addons']:
+            print(f'Checking {addon}')
             self.update_addon(addon)
         self.add_update_elvui()
 
